@@ -21,7 +21,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon -e js,json,env server.js"
+    "dev": "nodemon -e js,json,env server.js",
+    "build": "npm install"
   },
   "keywords": [],
   "author": "",
