@@ -13,10 +13,12 @@ const generateTokenAndCookie = (
     }
   );
 
+  const isProduction = process.env.NODE_ENV === "production";
+
   const cookieOptions = {
     httpOnly: true,
-    secure: false, // Set to true in production if running HTTPS
-    sameSite: "strict",
+    secure: isProduction, // Must be true on HTTPS (Render) for SameSite: none
+    sameSite: isProduction ? "none" : "lax", // Required for cross-domain cookies (Vercel -> Render)
   };
 
   if (rememberMe) {
