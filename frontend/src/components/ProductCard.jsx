@@ -14,7 +14,7 @@ const ProductCard = ({ product }) => {
           <span className="product-card-category">{product.category}</span>
         )}
         <img
-          src={`http://localhost:5000${product.image}`}
+          src={`${import.meta.env.VITE_SERVER_URL || "http://localhost:5000"}${product.image}`}
           alt={product.name}
           loading="lazy"
         />
