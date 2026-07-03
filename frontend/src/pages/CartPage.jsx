@@ -42,7 +42,7 @@ const CartPage = () => {
               }}
             >
               <img
-                src={`http://localhost:5000${item.image}`}
+                src={`${import.meta.env.VITE_SERVER_URL || "http://localhost:5000"}${item.image}`}
                 alt={item.name}
                 style={{
                   width: "120px",
