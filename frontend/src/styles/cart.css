@@ -164,7 +164,7 @@
   background-color: var(--primary-light);
 }
 
-/* 📱 Responsive Mobile media queries */
+/* Responsive Cart */
 @media (max-width: 600px) {
   .cart-item {
     flex-direction: column;

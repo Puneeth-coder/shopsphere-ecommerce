@@ -55,11 +55,7 @@ const AdminProductsPage = () => {
 
       const { data } = await api.post("/upload", formData, config);
       setImage(data.image);
-      
-      // DYNAMIC URL FOR IMAGE PREVIEW:
-      const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
-      setImagePreview(`${serverUrl}${data.image}`);
-      
+      setImagePreview(`http://localhost:5000${data.image}`);
       setSuccess("Image uploaded successfully!");
     } catch (err) {
       console.error(err);
@@ -123,8 +119,6 @@ const AdminProductsPage = () => {
       setError("Failed to delete product.");
     }
   };
-
-  const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
 
   return (
     <div className="admin-container">
@@ -269,7 +263,7 @@ const AdminProductsPage = () => {
                     <td>
                       <div className="admin-product-item">
                         <img
-                          src={`${serverUrl}${product.image}`}
+                          src={`http://localhost:5000${product.image}`}
                           alt={product.name}
                           className="admin-product-thumb"
                         />

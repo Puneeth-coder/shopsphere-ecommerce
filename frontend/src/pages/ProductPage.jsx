@@ -62,7 +62,7 @@ return <h2>Product Not Found</h2>;
 return ( <div className="product-page">
 {/* Product Image */} <div className="product-image">
 <img
-src={`${import.meta.env.VITE_SERVER_URL || "http://localhost:5000"}${product.image}`}
+src={`http://localhost:5000${product.image}`}
 alt={product.name}
 /> </div>
   {/* Product Details */}

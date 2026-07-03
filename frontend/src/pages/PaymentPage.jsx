@@ -1,130 +1,102 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/checkout.css";
 
 const PaymentPage = () => {
-  const [paymentMethod, setPaymentMethod] =
-    useState("COD");
+  const navigate = useNavigate();
+  const [paymentMethod, setPaymentMethod] = useState("COD");
 
   const submitHandler = (e) => {
     e.preventDefault();
-
-    localStorage.setItem(
-      "paymentMethod",
-      paymentMethod
-    );
-
-    alert(
-      "Payment Method Saved Successfully!"
-    );
-
-    console.log(
-      "Selected Payment:",
-      paymentMethod
-    );
+    localStorage.setItem("paymentMethod", paymentMethod);
+    alert("Payment Method Saved Successfully!");
+    navigate("/placeorder");
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "600px",
-        margin: "40px auto",
-        padding: "20px",
-        border: "1px solid #ddd",
-        borderRadius: "10px",
-      }}
-    >
-      <h1>Payment Method</h1>
-
-      <form onSubmit={submitHandler}>
-        <div>
-          <input
-            type="radio"
-            id="cod"
-            value="COD"
-            checked={
-              paymentMethod === "COD"
-            }
-            onChange={(e) =>
-              setPaymentMethod(
-                e.target.value
-              )
-            }
-          />
-
-          <label htmlFor="cod">
-            Cash On Delivery (COD)
-          </label>
+    <div className="checkout-container">
+      {/* Progress Tracker */}
+      <div className="checkout-steps">
+        <div className="step-item completed">
+          <span className="step-num">1</span> Shipping Details
         </div>
-
-        <br />
-
-        <div>
-          <input
-            type="radio"
-            id="upi"
-            value="UPI"
-            checked={
-              paymentMethod === "UPI"
-            }
-            onChange={(e) =>
-              setPaymentMethod(
-                e.target.value
-              )
-            }
-          />
-
-          <label htmlFor="upi">
-            UPI
-          </label>
+        <div className="step-item active">
+          <span className="step-num">2</span> Payment Option
         </div>
-
-        <br />
-
-        <div>
-          <input
-            type="radio"
-            id="card"
-            value="Card"
-            checked={
-              paymentMethod === "Card"
-            }
-            onChange={(e) =>
-              setPaymentMethod(
-                e.target.value
-              )
-            }
-          />
-
-          <label htmlFor="card">
-            Debit / Credit Card
-          </label>
+        <div className="step-item">
+          <span className="step-num">3</span> Complete Order
         </div>
+      </div>
 
-        <br />
+      <div className="checkout-card" style={{ maxWidth: "600px", margin: "0 auto" }}>
+        <h2 className="checkout-card-title">Select Payment Method</h2>
+        <form onSubmit={submitHandler}>
+          <div className="payment-methods-grid">
+            {/* Cash on Delivery */}
+            <div 
+              className={`payment-method-card ${paymentMethod === "COD" ? "selected" : ""}`}
+              onClick={() => setPaymentMethod("COD")}
+            >
+              <input
+                type="radio"
+                id="cod"
+                name="paymentMethod"
+                value="COD"
+                checked={paymentMethod === "COD"}
+                onChange={() => setPaymentMethod("COD")}
+              />
+              <label htmlFor="cod" className="payment-method-label">
+                Cash On Delivery (COD)
+                <span className="payment-method-desc">Pay with cash when your products are delivered.</span>
+              </label>
+            </div>
 
-        <h3
-          style={{
-            color: "green",
-          }}
-        >
-          Selected Payment Method:
-          {" "}
-          {paymentMethod}
-        </h3>
+            {/* UPI Test Gateway */}
+            <div 
+              className={`payment-method-card ${paymentMethod === "UPI" ? "selected" : ""}`}
+              onClick={() => setPaymentMethod("UPI")}
+            >
+              <input
+                type="radio"
+                id="upi"
+                name="paymentMethod"
+                value="UPI"
+                checked={paymentMethod === "UPI"}
+                onChange={() => setPaymentMethod("UPI")}
+              />
+              <label htmlFor="upi" className="payment-method-label">
+                UPI / Net Banking (Razorpay)
+                <span className="payment-method-desc">Pay instantly using GPay, PhonePe, Paytm, or Net Banking.</span>
+              </label>
+            </div>
 
-        <button type="submit">
-          Save Payment Method
-        </button>
-        <Link to="/placeorder">
-  <button
-    style={{
-      marginLeft: "10px",
-    }}
-  >
-    Review Order
-  </button>
-</Link>
-      </form>
+            {/* Credit/Debit Card */}
+            <div 
+              className={`payment-method-card ${paymentMethod === "Card" ? "selected" : ""}`}
+              onClick={() => setPaymentMethod("Card")}
+            >
+              <input
+                type="radio"
+                id="card"
+                name="paymentMethod"
+                value="Card"
+                checked={paymentMethod === "Card"}
+                onChange={() => setPaymentMethod("Card")}
+              />
+              <label htmlFor="card" className="payment-method-label">
+                Debit / Credit Card (Razorpay)
+                <span className="payment-method-desc">Secure checkout via Visa, Mastercard, RuPay, or AMEX.</span>
+              </label>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: "16px", marginTop: "24px" }}>
+            <button className="btn-checkout-action" type="submit" style={{ flex: 1 }}>
+              Save & Continue
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
