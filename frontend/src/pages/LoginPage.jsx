@@ -9,10 +9,13 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { user, setUser } = useUser();
 
+  // Password login states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Redirect to home if user is already logged in
@@ -22,9 +25,11 @@ const LoginPage = () => {
     }
   }, [user, navigate]);
 
-  const handleSubmit = async (e) => {
+  // Handle traditional password login
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
     setLoading(true);
 
     try {
@@ -65,7 +70,14 @@ const LoginPage = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        {success && (
+          <div className="auth-success">
+            <span>✓</span> {success}
+          </div>
+        )}
+
+        {/* Password Login Form */}
+        <form onSubmit={handlePasswordSubmit}>
           <div className="form-group">
             <label className="form-label" htmlFor="email-input">
               Email Address
@@ -107,9 +119,6 @@ const LoginPage = () => {
               />
               Remember Me
             </label>
-            <Link to="/forgot-password" className="auth-link">
-              Forgot Password?
-            </Link>
           </div>
 
           <button className="btn-primary auth-btn" type="submit" disabled={loading}>

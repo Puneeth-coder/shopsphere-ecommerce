@@ -6,6 +6,8 @@ import {
 }
 from "../context/UserContext";
 
+import Loader from "./Loader";
+
 const ProtectedRoute =
 ({ children }) => {
 
@@ -17,9 +19,7 @@ const ProtectedRoute =
 
  if (loading) {
   return (
-   <h2>
-    Loading...
-   </h2>
+   <Loader message="Waking up server nodes... This might take up to 30 seconds." />
   );
  }
 

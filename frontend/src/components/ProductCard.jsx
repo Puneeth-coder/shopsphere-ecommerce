@@ -7,6 +7,8 @@ const ProductCard = ({ product }) => {
 
   const isOutOfStock = product.stock <= 0;
 
+  const serverUrl = import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
+
   return (
     <div className="product-card">
       <div className="product-card-img-wrapper">
@@ -14,7 +16,7 @@ const ProductCard = ({ product }) => {
           <span className="product-card-category">{product.category}</span>
         )}
         <img
-          src={`${import.meta.env.VITE_SERVER_URL || "http://localhost:5000"}${product.image}`}
+          src={`${serverUrl}${product.image}`}
           alt={product.name}
           loading="lazy"
         />

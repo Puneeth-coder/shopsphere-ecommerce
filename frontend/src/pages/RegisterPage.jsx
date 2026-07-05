@@ -2,53 +2,94 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import api from "../services/api";
+import { useUser } from "../context/UserContext";
 import "../styles/auth.css";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  
+  // OTP Verification states
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  // Send OTP handler using backend SMTP
+  const handleSendOtp = async (e) => {
     e.preventDefault();
+    if (!email) {
+      setError("Please enter your email address first.");
+      return;
+    }
 
     setError("");
     setSuccess("");
     setLoading(true);
 
     try {
-      const response = await api.post(
-        "/auth/register",
-        {
-          name,
-          email,
-          password,
-        }
-      );
+      await api.post("/auth/send-otp", {
+        identifier: email,
+      });
 
-      console.log(response.data);
+      setOtpSent(true);
+      setSuccess("Verification OTP sent! Please check your email inbox.");
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Failed to send verification code.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      setSuccess(
-        "Registration Successful! Redirecting to Login..."
-      );
+  // Main Submit handler (Verifies OTP first, then registers account on backend)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (!otpSent) {
+      setError("Please request and enter the verification OTP sent to your email.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // 1. Verify OTP first (which logs the user in under a temp account on the backend)
+      const verifyRes = await api.post("/auth/verify-otp", {
+        identifier: email,
+        otp: otp,
+      });
+
+      // 2. Once verified/logged in, update the profile with the chosen Name and Password
+      const updateRes = await api.put("/auth/profile", {
+        name: name,
+        password: password,
+      });
+
+      setSuccess("Account verified and registered successfully!");
+      setUser(updateRes.data.user);
 
       setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+        navigate("/");
+      }, 1500);
 
-    } catch (error) {
-      console.log(error);
-
-      setError(
-        error.response?.data?.message ||
-        "Registration Failed"
-      );
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "OTP verification or registration failed.");
     } finally {
       setLoading(false);
     }
@@ -57,18 +98,14 @@ const RegisterPage = () => {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <div className="auth-header">
-          <h1 className="auth-brand">
-            Shop<span>Sphere</span>
-          </h1>
-          <p className="auth-subtitle">Create a new account and start shopping today.</p>
-        </div>
-
-        {success && (
-          <div className="auth-success">
-            <span>✓</span> {success}
+        {/* Brand/LMS Style Header */}
+        <div className="auth-header" style={{ marginBottom: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", fontSize: "1.2rem", fontWeight: "700", color: "var(--primary-dark)", marginBottom: "16px" }}>
+            <span style={{ fontSize: "1.6rem" }}>🎓</span> ShopSphere Portal
           </div>
-        )}
+          <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--primary-dark)", margin: "0 0 6px 0" }}>Create an Account</h2>
+          <p className="auth-subtitle">Sign up to start shopping</p>
+        </div>
 
         {error && (
           <div className="auth-error">
@@ -76,37 +113,77 @@ const RegisterPage = () => {
           </div>
         )}
 
+        {success && (
+          <div className="auth-success">
+            <span>✓</span> {success}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
+          {/* Username Field */}
           <div className="form-group">
-            <label className="form-label" htmlFor="name-input">
-              Full Name
+            <label className="form-label" htmlFor="username-input">
+              Username
             </label>
             <input
-              id="name-input"
+              id="username-input"
               className="form-input"
               type="text"
-              placeholder="John Doe"
+              placeholder="Enter your username"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
           </div>
 
+          {/* Email Field with Send OTP Button */}
           <div className="form-group">
             <label className="form-label" htmlFor="email-input">
-              Email Address
+              Email
             </label>
-            <input
-              id="email-input"
-              className="form-input"
-              type="email"
-              placeholder="name@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <div className="input-with-button">
+              <input
+                id="email-input"
+                className="form-input"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={otpSent}
+              />
+              <button
+                type="button"
+                className="btn-side"
+                onClick={handleSendOtp}
+                disabled={loading || !email}
+              >
+                {otpSent ? "Resend" : "Send OTP"}
+              </button>
+            </div>
           </div>
 
+          {/* OTP Verification Field (Appears only when OTP is sent) */}
+          {otpSent && (
+            <div className="form-group" style={{ animation: "fadeIn 0.3s ease" }}>
+              <label className="form-label" htmlFor="otp-verify-input">
+                Enter Verification OTP
+              </label>
+              <input
+                id="otp-verify-input"
+                className="form-input"
+                type="text"
+                maxLength="6"
+                placeholder="••••••"
+                style={{ textAlign: "center", fontWeight: "700", letterSpacing: "4px" }}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                required
+              />
+            </div>
+          )}
+
+          {/* Password Field */}
           <div className="form-group">
             <label className="form-label" htmlFor="password-input">
               Password
@@ -115,15 +192,31 @@ const RegisterPage = () => {
               id="password-input"
               className="form-input"
               type="password"
-              placeholder="••••••••"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
-          <button className="btn-primary auth-btn" type="submit" disabled={loading}>
-            {loading ? "Registering..." : "Create Account"}
+          {/* Confirm Password Field */}
+          <div className="form-group">
+            <label className="form-label" htmlFor="confirm-password-input">
+              Confirm Password
+            </label>
+            <input
+              id="confirm-password-input"
+              className="form-input"
+              type="password"
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button className="btn-primary auth-btn" type="submit" disabled={loading} style={{ marginTop: "12px" }}>
+            {loading ? "Verifying & Signing Up..." : "Sign Up"}
           </button>
         </form>
 

@@ -5,7 +5,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 
 import HomePage from "./pages/HomePage";
-import ProductPage from "./pages/ProductPage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
 import CartPage from "./pages/CartPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -42,7 +42,7 @@ function App() {
           path="/product/:id"
           element={
             <ProtectedRoute>
-              <ProductPage />
+              <ProductDetailsPage />
             </ProtectedRoute>
           }
         />

@@ -148,3 +148,76 @@
   font-size: 0.9rem;
   color: var(--text-muted);
 }
+
+/* Tab Navigation for Login Methods */
+.auth-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 24px;
+}
+
+.auth-tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  transition: var(--transition);
+}
+
+.auth-tab:hover {
+  color: var(--primary-light);
+}
+
+.auth-tab.active {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+}
+
+/* Side Button inside Input Container */
+.input-with-button {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.input-with-button .form-input {
+  flex: 1;
+}
+
+.input-with-button .btn-side {
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1.5px solid var(--accent-color);
+  color: var(--accent-color);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  transition: var(--transition);
+  height: 48px; /* Match form input height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-with-button .btn-side:hover:not(:disabled) {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.input-with-button .btn-side:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}

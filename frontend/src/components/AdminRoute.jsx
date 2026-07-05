@@ -7,14 +7,20 @@ import {
  useUser
 }
 from "../context/UserContext";
+import Loader from "./Loader";
 
 const AdminRoute =
 ({ children }) => {
 
  const {
-  user
+  user,
+  loading
  } =
  useUser();
+
+ if (loading) {
+  return <Loader message="Verifying security credentials..." />;
+ }
 
  if (
   !user
