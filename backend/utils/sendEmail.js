@@ -6,7 +6,9 @@ const sendEmail = async ({ to, subject, text, html }) => {
   }
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // Use direct SSL connection for highest trust rating
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -19,6 +21,12 @@ const sendEmail = async ({ to, subject, text, html }) => {
     subject,
     text,
     html,
+    headers: {
+      "X-Priority": "1", // High Priority
+      "X-MSMail-Priority": "High",
+      "Importance": "high",
+      "Priority": "urgent"
+    }
   };
 
   await transporter.sendMail(mailOptions);

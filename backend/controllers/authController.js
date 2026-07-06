@@ -181,11 +181,11 @@ const sendOTP = async (req, res) => {
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 550px; margin: 20px auto; padding: 30px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
           <div style="text-align: center; margin-bottom: 24px;">
             <h2 style="color: #0f172a; margin: 0; font-size: 1.8rem; font-weight: 800;">Shop<span style="color: #f97316;">Sphere</span></h2>
-            <p style="color: #64748b; font-size: 0.9rem; margin-top: 4px;">Verification Portal</p>
+            <p style="color: #64748b; font-size: 0.95rem; margin-top: 4px; font-weight: 600;">Welcome to ShopSphere, your store!</p>
           </div>
           <div style="border-top: 1px solid #f1f5f9; padding-top: 24px;">
             <p style="color: #334155; font-size: 1rem; margin-bottom: 16px;">Hello,</p>
-            <p style="color: #475569; font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">Thank you for registering at ShopSphere. To verify your email address, please use the 6-digit verification code below:</p>
+            <p style="color: #475569; font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">Thank you for choosing ShopSphere, your one-stop store. To verify your email address and complete registration, please enter the following 6-digit one-time password (OTP):</p>
             <div style="text-align: center; margin: 30px 0;">
               <span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 6px; color: #f97316; background-color: #fff7ed; padding: 16px 32px; border-radius: 8px; border: 1.5px dashed #ffedd5; display: inline-block; box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.02);">${otp}</span>
             </div>
@@ -200,8 +200,8 @@ const sendOTP = async (req, res) => {
       try {
         await sendEmail({
           to: cleanIdentifier,
-          subject: `${otp} is your ShopSphere Verification Code`,
-          text: `Your ShopSphere Verification Code is ${otp}. Valid for 10 minutes.`,
+          subject: `Welcome to ShopSphere - Verification Code: ${otp}`,
+          text: `Welcome to ShopSphere! Your verification code is ${otp}. Valid for 10 minutes.`,
           html: htmlContent,
         });
       } catch (err) {
