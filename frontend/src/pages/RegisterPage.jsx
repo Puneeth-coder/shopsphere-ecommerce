@@ -20,7 +20,10 @@ const RegisterPage = () => {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false);
+  
+  // Separate loading states for better UX
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   // Send OTP handler using backend SMTP
   const handleSendOtp = async (e) => {
@@ -32,7 +35,7 @@ const RegisterPage = () => {
 
     setError("");
     setSuccess("");
-    setLoading(true);
+    setOtpLoading(true);
 
     try {
       await api.post("/auth/send-otp", {
@@ -45,7 +48,7 @@ const RegisterPage = () => {
       console.error(err);
       setError(err.response?.data?.message || "Failed to send verification code.");
     } finally {
-      setLoading(false);
+      setOtpLoading(false);
     }
   };
 
@@ -65,7 +68,7 @@ const RegisterPage = () => {
       return;
     }
 
-    setLoading(true);
+    setSubmitLoading(true);
 
     try {
       // 1. Verify OTP first (which logs the user in under a temp account on the backend)
@@ -91,7 +94,7 @@ const RegisterPage = () => {
       console.error(err);
       setError(err.response?.data?.message || "OTP verification or registration failed.");
     } finally {
-      setLoading(false);
+      setSubmitLoading(false);
     }
   };
 
@@ -133,6 +136,7 @@ const RegisterPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
+              disabled={submitLoading}
             />
           </div>
 
@@ -150,15 +154,15 @@ const RegisterPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                disabled={otpSent}
+                disabled={otpSent || submitLoading}
               />
               <button
                 type="button"
                 className="btn-side"
                 onClick={handleSendOtp}
-                disabled={loading || !email}
+                disabled={otpLoading || submitLoading || !email}
               >
-                {otpSent ? "Resend" : "Send OTP"}
+                {otpLoading ? "Sending..." : (otpSent ? "Resend" : "Send OTP")}
               </button>
             </div>
           </div>
@@ -179,6 +183,7 @@ const RegisterPage = () => {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 required
+                disabled={submitLoading}
               />
             </div>
           )}
@@ -196,6 +201,7 @@ const RegisterPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={submitLoading}
             />
           </div>
 
@@ -212,11 +218,12 @@ const RegisterPage = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              disabled={submitLoading}
             />
           </div>
 
-          <button className="btn-primary auth-btn" type="submit" disabled={loading} style={{ marginTop: "12px" }}>
-            {loading ? "Verifying & Signing Up..." : "Sign Up"}
+          <button className="btn-primary auth-btn" type="submit" disabled={submitLoading || otpLoading || !otpSent} style={{ marginTop: "12px" }}>
+            {submitLoading ? "Verifying & Signing Up..." : "Sign Up"}
           </button>
         </form>
 
