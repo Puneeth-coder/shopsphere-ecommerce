@@ -104,7 +104,7 @@ const RegisterPage = () => {
         {/* Brand/LMS Style Header */}
         <div className="auth-header" style={{ marginBottom: "24px" }}>
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", fontSize: "1.2rem", fontWeight: "700", color: "var(--primary-dark)", marginBottom: "16px" }}>
-            <span style={{ fontSize: "1.6rem" }}>🎓</span> ShopSphere Portal
+            <span style={{ fontSize: "1.6rem" }}></span> ShopSphere Portal
           </div>
           <h2 style={{ fontSize: "1.6rem", fontWeight: "800", color: "var(--primary-dark)", margin: "0 0 6px 0" }}>Create an Account</h2>
           <p className="auth-subtitle">Sign up to start shopping</p>
