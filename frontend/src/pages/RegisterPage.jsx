@@ -84,6 +84,7 @@ const RegisterPage = () => {
       });
 
       setSuccess("Account verified and registered successfully!");
+      localStorage.setItem("isLoggedIn", "true");
       setUser(updateRes.data.user);
 
       setTimeout(() => {

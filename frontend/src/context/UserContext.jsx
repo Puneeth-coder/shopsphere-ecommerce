@@ -17,20 +17,20 @@ export const UserProvider = ({ children }) => {
     useState(true);
 
   useEffect(() => {
+    const hasSession = localStorage.getItem("isLoggedIn") === "true";
+    
+    if (!hasSession) {
+      setLoading(false);
+      return;
+    }
+
     const fetchUser = async () => {
       try {
-        const response =
-          await api.get("/auth/me");
-
-        setUser(
-          response.data.user
-        );
-
+        const response = await api.get("/auth/me");
+        setUser(response.data.user);
       } catch (error) {
-        console.log(
-          "No active session"
-        );
-
+        console.log("No active session");
+        localStorage.removeItem("isLoggedIn");
       } finally {
         setLoading(false);
       }
@@ -41,17 +41,10 @@ export const UserProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      const response =
-        await api.post(
-          "/auth/logout"
-        );
-
-      console.log(
-        response.data
-      );
-
+      const response = await api.post("/auth/logout");
+      console.log(response.data);
       setUser(null);
-
+      localStorage.removeItem("isLoggedIn");
     } catch (error) {
       console.log(error);
     }

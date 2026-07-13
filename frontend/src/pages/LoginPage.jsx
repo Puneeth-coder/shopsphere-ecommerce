@@ -42,6 +42,7 @@ const LoginPage = () => {
         }
       );
 
+      localStorage.setItem("isLoggedIn", "true");
       setUser(response.data.user);
       navigate("/");
     } catch (error) {
